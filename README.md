@@ -24,51 +24,15 @@ Algumas áreas, como cartão, investimentos e notificações, usam dados demonst
 
 ## Fluxo principal
 
-```text
-Inicialização
-    ↓
-Splash
-    ↓ verifica a sessão salva
-┌───────────────┴───────────────┐
-│                               │
-Usuário sem sessão          Usuário autenticado
-│                               │
-Login → Cadastro                 │
-└───────────────┬───────────────┘
-                ↓
-              Home
-                ↓
- Pix · Pagamentos · Recarga · Trazer saldo
- Extrato · Cartão · Investir · Perfil
-```
+O aplicativo começa pela tela de splash e verifica se há uma sessão salva no dispositivo. Quando encontra um usuário autenticado, segue direto para a Home. Caso contrário, apresenta o login, de onde também é possível acessar o cadastro.
 
-O ponto de entrada é `TERVONApp`, que apresenta a `RootView`. A raiz observa o `AppViewModel` e escolhe entre `SplashView`, `LoginView` e `HomeView`. Dentro da área autenticada, a navegação das funcionalidades é feita com `NavigationStack`, `NavigationLink`, destinos tipados e uma `TabView`.
+O ponto de entrada é `TERVONApp`, que apresenta a `RootView`. A raiz observa o `AppViewModel` e escolhe entre `SplashView`, `LoginView` e `HomeView`. Depois da autenticação, a Home dá acesso a Pix, pagamentos, recarga, entrada de saldo, extrato, cartão, investimentos e perfil. A navegação dessas funcionalidades usa `NavigationStack`, `NavigationLink`, destinos tipados e uma `TabView`.
 
 ## Arquitetura
 
 O projeto combina **MVVM**, separação em camadas inspirada em **Clean Architecture**, Repository Pattern e injeção de dependências. A divisão não é apenas organizacional: cada camada tem uma responsabilidade definida.
 
-```text
-┌──────────────────────────────────────────┐
-│ Features                                 │
-│ Views SwiftUI + ViewModels               │
-└────────────────────┬─────────────────────┘
-                     │ depende de contratos
-┌────────────────────▼─────────────────────┐
-│ Domain                                   │
-│ User, Transaction e protocolos           │
-└────────────────────▲─────────────────────┘
-                     │ implementados por
-┌────────────────────┴─────────────────────┐
-│ Data                                     │
-│ AuthRepository e TransactionRepository   │
-└────────────────────┬─────────────────────┘
-                     │ usa
-┌────────────────────▼─────────────────────┐
-│ Core                                     │
-│ LocalStorage e extensões compartilhadas  │
-└──────────────────────────────────────────┘
-```
+Na prática, as telas e seus ViewModels ficam em `Features`. Os ViewModels acessam os contratos declarados em `Domain`, enquanto `Data` fornece as implementações concretas desses contratos. A infraestrutura comum, incluindo a persistência local, fica em `Core`. A pasta `App` conecta essas partes e controla o estado geral da aplicação.
 
 ### App
 
@@ -108,25 +72,7 @@ Reúne infraestrutura compartilhada:
 
 ### Features
 
-Cada funcionalidade fica em sua própria pasta e, quando possui regra de negócio, é composta por uma `View` e um `ViewModel`:
-
-```text
-Features/
-├── Authentication/
-│   ├── Login/
-│   └── Register/
-├── Home/
-├── Pix/
-├── Pagamentos/
-├── Recarga/
-├── TrazerSaldo/
-├── Extrato/
-├── Cartao/
-├── Investir/
-├── Notifications/
-├── Profile/
-└── Splash/
-```
+Cada funcionalidade fica em sua própria pasta e, quando possui regra de negócio, é composta por uma `View` e um `ViewModel`. Atualmente, essa divisão contempla autenticação, Home, Pix, pagamentos, recarga, entrada de saldo, extrato, cartão, investimentos, notificações, perfil e splash.
 
 As Views cuidam da composição visual, estados temporários de formulário e navegação. Os ViewModels validam entradas, consultam repositórios e executam alterações de saldo e histórico.
 
