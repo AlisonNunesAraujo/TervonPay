@@ -1,5 +1,5 @@
 # TERVON
-
+## Ainda em desenvolvimento(algumas funções)
 Aplicativo iOS de carteira digital desenvolvido em SwiftUI. O TERVON reúne, em um único fluxo, cadastro e autenticação local, consulta de saldo, envio de Pix, pagamento de contas, recarga de celular, entrada de saldo, extrato, cartão, notificações e perfil.
 
 A intenção do projeto é demonstrar como um produto financeiro pode ser estruturado de forma clara e evolutiva no ecossistema Apple. Além da interface, o app implementa regras como validação de saldo, débito ou crédito na conta e criação de registros de transação. Atualmente, tudo funciona de forma local e serve como base para uma futura integração com serviços reais.
